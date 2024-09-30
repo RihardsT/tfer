@@ -1,0 +1,11 @@
+#! /bin/bash
+
+rm -rf .tfer
+mkdir .tfer | true
+
+cp -r $(find $PWD -name "*.tf" -o -name "*.tfvars") .tfer
+ln -s ${PWD}/.terraform.lock.hcl .tfer/.terraform.lock.hcl
+ln -s ${PWD}/.terraform .tfer/.terraform
+cd .tfer
+
+terraform $*
