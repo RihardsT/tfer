@@ -1,11 +1,38 @@
 #! /bin/bash
 
+### Filter out flags for tfer that start with --
+args=()
+flags=()
+for arg in "$@"; do
+  if [[ $arg == --* ]]; then
+    flags+=("$arg")
+  else
+    args+=("$arg")
+  fi
+done
+set -- "${args[@]}" "${flags[@]}"
+
+### Change directory if --dir flag is set
+for flag in "${flags[@]}"; do
+  if [[ $flag == --dir=* ]]; then
+    dir="${flag#--dir=}"
+    cd "$dir"
+  fi
+done
+
+### Clean .tfer directory
 rm -rf .tfer
 mkdir .tfer | true
 
-cp -r $(find $PWD -name "*.tf" -o -name "*.tfvars") .tfer
+### Create symlinks
+for file in $(find $PWD -name "*.tf" -o -name "*.tfvars"); do
+  ln -s "$file" .tfer/
+done
 ln -s ${PWD}/.terraform.lock.hcl .tfer/.terraform.lock.hcl
 ln -s ${PWD}/.terraform .tfer/.terraform
 cd .tfer
 
-terraform $*
+### Run terraform
+if [[ ! " ${flags[@]} " =~ " --link-only " ]]; then
+  terraform "${args[@]}"
+fi
