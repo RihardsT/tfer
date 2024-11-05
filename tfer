@@ -31,16 +31,25 @@ for flag in "${flags[@]}"; do
   fi
 done
 
-### Clean .tfer directory
-rm -rf .tfer
-mkdir .tfer | true
+### Create .tfer directory
+mkdir -p .tfer
 
 ### Create symlinks
-for file in $(find $PWD -name "*.tf" -o -name "*.tfvars"); do
-  ln -s "$file" .tfer/
+for file in $(find $PWD -name "*.tf" -o -name "*.tfvars" | grep -v .tfer); do
+  target=".tfer/$(basename "$file")"
+  if [[ ! -L "$target" || "$(readlink "$target")" != "$file" ]]; then
+    ln -sf "$file" "$target"
+  fi
 done
-ln -s ${PWD}/.terraform.lock.hcl .tfer/.terraform.lock.hcl
-ln -s ${PWD}/.terraform .tfer/.terraform
+### Remove missing links
+find .tfer -type l | while read -r link; do
+  if [[ ! -e "$link" ]]; then
+    rm "$link"
+  fi
+done
+
+ln -sf ${PWD}/.terraform.lock.hcl .tfer/.terraform.lock.hcl
+ln -sf ${PWD}/.terraform .tfer/.terraform
 cd .tfer
 
 ### Run terraform

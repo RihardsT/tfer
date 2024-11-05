@@ -10,4 +10,5 @@ sudo ln -s ${PWD}/tfer /usr/bin/tfer
 ### To do:
 - [x] Flag to only create links
 - [x] Flag to change Terraform dir
-- [ ] Refactor - check file diff and add/remove links as needed
+- [x] Refactor - check file diff and add/remove links as needed
+- [ ]
