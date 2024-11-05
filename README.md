@@ -1,5 +1,7 @@
 ### About
-Simple script to achieve "*include*" with Terraform.  
+Simple Terraform wrapper script to achieve "*include*".  
+This should allow to organize Terraform code without using modules.
+
 Only example for now: https://github.com/RihardsT/cloud_project_terraform_oracle
 
 ### Install
