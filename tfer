@@ -36,7 +36,8 @@ mkdir -p .tfer
 
 ### Create symlinks
 for file in $(find $PWD -name "*.tf" -o -name "*.tfvars" | grep -v .tfer); do
-  target=".tfer/$(basename "$file")"
+  relative_path="${file#$PWD/}"
+  target=".tfer/${relative_path//\//_}"
   if [[ ! -L "$target" || "$(readlink "$target")" != "$file" ]]; then
     ln -sf "$file" "$target"
   fi
