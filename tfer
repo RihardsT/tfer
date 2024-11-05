@@ -12,8 +12,19 @@ for arg in "$@"; do
 done
 set -- "${args[@]}" "${flags[@]}"
 
-### Change directory if --dir flag is set
 for flag in "${flags[@]}"; do
+  ### --help
+  if [[ $flag == --help ]]; then
+    echo "Usage: tfer [options] [terraform command and flags]"
+    echo "Example: tfer --dir=terraform/ plan"
+    echo ""
+    echo "Options:"
+    echo "  --help          Show this help message"
+    echo "  --dir=<path>    Change to directory <path> before executing"
+    echo "  --link-only     Only create symlinks, do not run terraform"
+    exit 0
+  fi
+  ### Change directory if --dir flag is set
   if [[ $flag == --dir=* ]]; then
     dir="${flag#--dir=}"
     cd "$dir"
